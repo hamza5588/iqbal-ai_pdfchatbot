@@ -11,7 +11,9 @@ from dotenv import load_dotenv
 from langchain_core.runnables import RunnableLambda
 from langchain_core.prompts import PromptTemplate
 from langchain_nomic import NomicEmbeddings
-from langchain_huggingface import HuggingFaceEmbeddings
+# from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_groq import ChatGroq
+
 
 load_dotenv()
 
@@ -52,15 +54,19 @@ def save_api_key(new_key):
 
 def get_llm():
     api_key = load_api_key()  # Always reload the API key from file
-    return ChatOpenAI(
+    return ChatGroq(
         model="llama-3.3-70b-versatile",
-        temperature=0.3,
-        openai_api_key=api_key
+        temperature=0,
+        api_key=api_key
+        # other params...
     )
 
-embeddings = HuggingFaceEmbeddings(
-    model_name="sentence-transformers/all-MiniLM-L6-v2"
+embeddings = NomicEmbeddings(
+    model="nomic-embed-text-v1",
 )
+# embeddings = HuggingFaceEmbeddings(
+#     model_name="sentence-transformers/all-MiniLM-L6-v2"
+# )
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() == 'pdf'
 
