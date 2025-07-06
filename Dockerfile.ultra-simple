@@ -1,11 +1,13 @@
-# Use a newer Python base image with updated SQLite3
-FROM python:3.11-bookworm
+# Use a stable Python base image
+FROM python:3.10-slim-bullseye
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV FLASK_APP=app.py
 ENV FLASK_ENV=production
+ENV PIP_NO_CACHE_DIR=1
+ENV PIP_DISABLE_PIP_VERSION_CHECK=1
 
 # Set work directory
 WORKDIR /app
@@ -13,8 +15,9 @@ WORKDIR /app
 # Copy requirements first for better caching
 COPY requirements.txt ./
 
-# Install dependencies with specific pip options
-RUN python -m pip install --no-cache-dir --disable-pip-version-check -r requirements.txt
+# Install dependencies
+RUN pip install --upgrade pip && \
+    pip install -r requirements.txt
 
 # Create uploads directory
 RUN mkdir -p uploads && chmod 755 uploads
