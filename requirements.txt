@@ -42,3 +42,4 @@ torchaudio
 
 # Optional: for better PDF processing
 pdfplumber
+langchain_groq
