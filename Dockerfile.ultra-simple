@@ -1,5 +1,5 @@
-# Use a different Python base image
-FROM python:3.10-bullseye
+# Use a newer Python base image with updated SQLite3
+FROM python:3.11-slim
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -9,6 +9,11 @@ ENV FLASK_ENV=production
 
 # Set work directory
 WORKDIR /app
+
+# Update system packages and install SQLite3
+RUN apt-get update && apt-get install -y \
+    sqlite3 \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements first for better caching
 COPY requirements.txt ./
