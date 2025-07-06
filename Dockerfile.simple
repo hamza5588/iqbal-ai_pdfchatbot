@@ -6,26 +6,21 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 ENV FLASK_APP=app.py
 ENV FLASK_ENV=production
-ENV DEBIAN_FRONTEND=noninteractive
 
 # Set work directory
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        build-essential \
-        gcc \
-        g++ \
-        libffi-dev \
-        libssl-dev \
-        && apt-get clean \
-        && rm -rf /var/lib/apt/lists/* \
-        && rm -rf /var/cache/apt/archives/*
+# Install system dependencies in separate steps
+RUN apt-get update
+RUN apt-get install -y build-essential
+RUN apt-get install -y gcc g++
+RUN apt-get install -y libffi-dev libssl-dev
+RUN apt-get clean
 
 # Install Python dependencies
 COPY requirements.txt ./
-RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
+RUN pip install --upgrade pip
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Create uploads directory
 RUN mkdir -p uploads && chmod 755 uploads
