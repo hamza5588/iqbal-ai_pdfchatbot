@@ -4,8 +4,8 @@ import os
 from langchain_openai import ChatOpenAI
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.output_parsers import StrOutputParser
-from langchain_community.document_loaders import PyPDFLoader
-from langchain_community.vectorstores import Chroma
+from langchain.document_loaders import PyPDFLoader
+from langchain.vectorstores import Chroma
 from langchain_core.messages import AIMessage, HumanMessage
 from dotenv import load_dotenv
 from langchain_core.runnables import RunnableLambda
@@ -281,4 +281,4 @@ def api_key_status():
     return jsonify({'api_key': masked})
 
 if __name__ == '__main__':
-    app.run(debug=False, host='0.0.0.0', port=5000)
+    app.run(debug=True)
