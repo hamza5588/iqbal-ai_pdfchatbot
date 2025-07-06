@@ -8,14 +8,34 @@ ENV FLASK_APP=app.py
 ENV FLASK_ENV=production
 ENV PIP_NO_CACHE_DIR=1
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1
+ENV LD_LIBRARY_PATH="/usr/local/lib"
+ENV PATH="/usr/local/bin:$PATH"
 
 # Set work directory
 WORKDIR /app
 
-# Copy requirements first for better caching
-COPY requirements.txt ./
+# Install system dependencies and build tools
+RUN apt-get update && apt-get install -y \
+    wget \
+    build-essential \
+    libssl-dev \
+    libffi-dev \
+    libsqlite3-dev \
+    zlib1g-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install dependencies
+# Install updated SQLite (version >= 3.35)
+RUN wget https://www.sqlite.org/2023/sqlite-autoconf-3410000.tar.gz && \
+    tar xzf sqlite-autoconf-3410000.tar.gz && \
+    cd sqlite-autoconf-3410000 && \
+    ./configure && make && make install && \
+    cd .. && rm -rf sqlite-autoconf-3410000*
+
+# Confirm updated sqlite version
+RUN sqlite3 --version
+
+# Copy requirements and install Python dependencies
+COPY requirements.txt ./
 RUN pip install --upgrade pip && \
     pip install -r requirements.txt
 
@@ -23,12 +43,12 @@ RUN pip install --upgrade pip && \
 RUN mkdir -p uploads && chmod 755 uploads
 
 # Copy application code
-COPY app.py ./
-COPY api_key.txt ./
+COPY app.py ./  
+COPY api_key.txt ./  
 COPY templates ./templates
 
-# Expose the port Flask runs on
+# Expose Flask port
 EXPOSE 5000
 
 # Run the Flask app
-CMD ["python", "app.py"] 
+CMD ["python", "app.py"]
