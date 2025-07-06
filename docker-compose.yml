@@ -2,7 +2,7 @@ services:
   pdf_reader_llm_app:
     build:
       context: .
-      dockerfile: Dockerfile.robust
+      dockerfile: Dockerfile.ultra-simple
     container_name: pdf_reader_llm_app
     ports:
       - "5000:5000"
